@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   @apply bg-slate-50 text-slate-900;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-input {
@@ -20,4 +23,202 @@ body {
 
 .btn-secondary {
   @apply bg-slate-200 text-slate-800 hover:bg-slate-300;
+}
+
+/* ===== Landing Page Enhancements ===== */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
+}
+
+@keyframes gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out both;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fade-in-up 0.7s ease-out 0.1s both;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fade-in-up 0.7s ease-out 0.2s both;
+}
+
+.animate-fade-in-up-delay-3 {
+  animation: fade-in-up 0.7s ease-out 0.3s both;
+}
+
+.animate-fade-in-up-delay-4 {
+  animation: fade-in-up 0.7s ease-out 0.4s both;
+}
+
+.animate-fade-in-up-delay-5 {
+  animation: fade-in-up 0.7s ease-out 0.5s both;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-rotate 8s ease infinite;
+}
+
+/* Glass card effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Water-themed background pattern */
+.water-bg {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Landing form inputs */
+.landing-input {
+  @apply w-full h-14 px-5 text-base bg-white/80 border border-indigo-200 rounded-xl 
+    focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none 
+    transition-all duration-300 font-semibold text-slate-800;
+  backdrop-filter: blur(8px);
+}
+
+.landing-input:hover {
+  @apply border-indigo-300 shadow-md;
+}
+
+.landing-select {
+  @apply w-full h-14 px-5 text-base bg-white/80 border border-indigo-200 rounded-xl 
+    focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none 
+    transition-all duration-300 font-semibold text-slate-800 cursor-pointer appearance-none;
+  backdrop-filter: blur(8px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 18px;
+  padding-right: 48px;
+}
+
+.landing-select:hover {
+  @apply border-indigo-300 shadow-md;
+}
+
+/* CTA Button */
+.cta-button {
+  @apply relative overflow-hidden bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 
+    text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-xl 
+    hover:shadow-2xl hover:shadow-indigo-300/50 transition-all duration-500 
+    transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-3;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.cta-button:hover::before {
+  left: 100%;
+}
+
+/* Stat card hover */
+.stat-card {
+  @apply transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl;
+}
+
+/* Feature card hover */
+.feature-card {
+  @apply transition-all duration-500 transform hover:-translate-y-2;
+}
+
+.feature-card:hover .feature-icon {
+  @apply scale-110;
+}
+
+/* Water drop decorative elements */
+.water-drop {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.15), rgba(59, 130, 246, 0.05));
+}
+
+/* Ripple on CTA */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: ripple 1.5s ease-out infinite;
 }

@@ -9,7 +9,10 @@ export default {
       colors: {
         primary: '#1e293b',
         secondary: '#64748b',
-      }
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],
