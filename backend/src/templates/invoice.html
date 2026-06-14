@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 40px;
+            color: #000;
+            font-size: 13px;
+        }
+
+        .invoice-container {
+            width: 100%;
+            border: 2px solid #000;
+            padding: 0;
+            box-sizing: border-box;
+            position: relative;
+            min-height: 950px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding: 15px;
+        }
+
+        .header h3 {
+            margin: 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .header h1 {
+            margin: 5px 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin: 3px 0;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .gst-cell-row {
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .details-section {
+            display: flex;
+            border-bottom: 2px solid #000;
+        }
+
+        .details-left,
+        .details-right {
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .details-left {
+            width: 60%;
+            border-right: 2px solid #000;
+        }
+
+        .details-right {
+            width: 40%;
+        }
+
+        .details-row {
+            margin-bottom: 6px;
+            display: flex;
+        }
+
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+
+        .value {
+            flex: 1;
+            font-weight: bold;
+        }
+
+        table.material-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.material-table th,
+        table.material-table td {
+            border-right: 2px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table.material-table th {
+            border-bottom: 2px solid #000;
+            background-color: #f0f0f0;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        table.material-table td:last-child,
+        table.material-table th:last-child {
+            border-right: none;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Summary Split Layout */
+        .summary-container {
+            display: flex;
+            border-top: 2px solid #000;
+            min-height: 200px;
+        }
+
+        .amount-in-words-box {
+            width: 50%;
+            padding: 15px;
+            border-right: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tax-section {
+            width: 50%;
+        }
+
+        .tax-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tax-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .tax-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .grand-total-row {
+            background-color: #f2f2f2;
+            font-size: 14px !important;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-top: 2px solid #000;
+            margin-top: auto;
+        }
+
+        .signature-table td {
+            width: 50%;
+            border-right: 2px solid #000;
+            padding: 15px;
+            height: 120px;
+            vertical-align: bottom;
+            text-align: center;
+        }
+
+        .signature-table td:last-child {
+            border-right: none;
+        }
+
+        .signature-line {
+            border-top: 1.5px solid #000;
+            width: 85%;
+            margin: 0 auto;
+            padding-top: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        @media print {
+            .page-break {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {{#each invoices}}
+    <div class="invoice-container {{#unless @last}}page-break{{/unless}}">
+        <div class="header">
+            <h3>TAX INVOICE</h3>
+            <h1>SRI DURGA DEVI BORE WELLS</h1>
+            <p>Near I.O.C Petrol Bunk, Opp. Boys Hostel & D.S.P Office, BOBBILI</p>
+            <div class="gst-cell-row">
+                <span>GSTIN: 37AMEPV3389H1ZG</span>
+                <span>Cell: 9553553850</span>
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="details-left">
+                <div class="details-row"><span class="label">M/s:</span> <span class="value"
+                        style="font-size: 1.2em;">{{customerName}}</span></div>
+                <div class="details-row"><span class="label">Address:</span> <span
+                        class="value">{{customerAddress}}</span></div>
+            </div>
+            <div class="details-right">
+                <div class="details-row"><span class="label">Inv No:</span> <span class="value">{{invoiceNumber}}</span>
+                </div>
+                <div class="details-row"><span class="label">Date:</span> <span class="value">{{date}}</span></div>
+                <div class="details-row"><span class="label">Month:</span> <span class="value">{{monthYear}}</span>
+                </div>
+            </div>
+        </div>
+
+        <table class="material-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">S.NO</th>
+                    <th>DESCRIPTION</th>
+                    <th style="width: 100px;">HSN CODE</th>
+                    <th style="width: 60px;">QTY</th>
+                    <th style="width: 100px;">UNIT RATE</th>
+                    <th style="width: 120px;">AMOUNT</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each items}}
+                <tr>
+                    <td class="text-center">{{sno}}</td>
+                    <td style="font-weight: bold;">{{description}}</td>
+                    <td class="text-center">{{#if description}} {{/if}}</td>
+                    <td class="text-center">{{#if quantity}}{{quantity}}{{/if}}</td>
+                    <td class="text-right">{{#if unitRate}}{{unitRate}}{{/if}}</td>
+                    <td class="text-right" style="font-weight: bold;">{{#if (gt total 0)}}₹ {{total}}{{/if}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <div class="summary-container">
+            <div class="amount-in-words-box">
+                <p
+                    style="text-decoration: underline; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 14px;">
+                    Amount in Words:</p>
+                <p style="font-style: italic; font-size: 1.2em; line-height: 1.5; font-weight: bold;">{{amountInWords}}
+                </p>
+            </div>
+            <div class="tax-section">
+                <table class="tax-table">
+                    <tr class="grand-total-row">
+                        <td>TOTAL</td>
+                        <td class="text-right">₹ {{grandTotal}}</td>
+                    </tr>
+                    <tr>
+                        <td>Taxable Value</td>
+                        <td class="text-right">{{taxableValue}}</td>
+                    </tr>
+                    <tr style="color: #000; border-bottom: 1.5px solid #000;">
+                        <td>Reverse Charge @ GST (18%)</td>
+                        <td class="text-right">₹ {{reverseCharge}}</td>
+                    </tr>
+                    <tr>
+                        <td>SGST @ 9%</td>
+                        <td class="text-right">{{sgst}}</td>
+                    </tr>
+                    <tr>
+                        <td>CGST @ 9%</td>
+                        <td class="text-right">{{cgst}}</td>
+                    </tr>
+                    <tr>
+                        <td>IGST</td>
+                        <td class="text-right">{{igst}}</td>
+                    </tr>
+                    <tr>
+                        <td>Round Off</td>
+                        <td class="text-right">{{roundOff}}</td>
+                    </tr>
+                    <tr class="grand-total-row" style="border-top: 2px solid #000; font-size: 16px !important;">
+                        <td>FINAL TOTAL</td>
+                        <td class="text-right">₹ {{grandTotal}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <table class="signature-table">
+            <tr>
+                <td>
+                    <div class="signature-line">Customer Signature</div>
+                </td>
+                <td>
+                    <div class="signature-line">Proprietor Signature</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    {{/each}}
+</body>
+
+</html>
