@@ -378,7 +378,7 @@ const App = () => {
         items: inv.items.map((it, i) => ({ ...it, sno: i + 1 }))
       }));
 
-      const response = await axios.post('https://billing-backend-mv0z.onrender.com/api/generate-pdf', {
+      const response = await axios.post('http://localhost:5000/api/generate-pdf', {
         invoices: preparedInvoices
       }, { responseType: 'blob' });
 
