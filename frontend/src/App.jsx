@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 import axios from 'axios';
 import { 
   FileText, 
@@ -19,7 +19,12 @@ import {
   Zap,
   BarChart3,
   Receipt,
-  ChevronDown
+  ChevronDown,
+  Target,
+  TrendingUp,
+  Award,
+  Trophy,
+  IndianRupee
 } from 'lucide-react';
 
 // --- Constants & Utilities ---
@@ -75,6 +80,11 @@ const calculateReverseGST = (items, igst = 0, roundOff = 0) => {
       grandTotal: grandTotal,
       amountInWords: numberToWords(grandTotal)
     };
+};
+
+const formatCurrency = (amount) => {
+  const num = parseFloat(amount) || 0;
+  return num.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 };
 
 // --- Flat UI Components ---
@@ -135,18 +145,177 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
   </div>
 );
 
+// --- Sales Target Tracker Component ---
+
+const SalesTargetTracker = ({ targetAmount, totalSales }) => {
+  const remainingAmount = Math.max(targetAmount - totalSales, 0);
+  const achievementPercentage = targetAmount > 0 ? (totalSales / targetAmount) * 100 : 0;
+  const clampedPercentage = Math.min(achievementPercentage, 100);
+  const isTargetAchieved = totalSales >= targetAmount && targetAmount > 0;
+  const extraRevenue = Math.max(totalSales - targetAmount, 0);
+
+  // Color theming based on achievement
+  const getProgressColor = () => {
+    if (achievementPercentage >= 100) return { bg: 'bg-emerald-500', gradient: 'from-emerald-400 to-emerald-600', text: 'text-emerald-600', light: 'bg-emerald-50', border: 'border-emerald-200' };
+    if (achievementPercentage >= 70) return { bg: 'bg-amber-500', gradient: 'from-amber-400 to-orange-500', text: 'text-amber-600', light: 'bg-amber-50', border: 'border-amber-200' };
+    return { bg: 'bg-indigo-500', gradient: 'from-indigo-400 to-blue-600', text: 'text-indigo-600', light: 'bg-indigo-50', border: 'border-indigo-200' };
+  };
+
+  const colors = getProgressColor();
+
+  if (!targetAmount || targetAmount <= 0) return null;
+
+  return (
+    <div className="sticky-tracker bg-white/90 border-b border-slate-200 shadow-sm mb-8 -mx-6 px-6 py-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Target Achieved Banner */}
+        {isTargetAchieved && (
+          <div className="success-banner rounded-2xl p-5 mb-6 text-white text-center animate-celebrate">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Trophy size={28} className="text-yellow-300" />
+              <h3 className="text-2xl font-extrabold">🎉 Monthly Target Achieved!</h3>
+              <Trophy size={28} className="text-yellow-300" />
+            </div>
+            <div className="flex items-center justify-center gap-8 text-sm font-semibold mt-3 flex-wrap">
+              <span className="bg-white/20 px-4 py-1.5 rounded-full">Generated Sales: ₹{formatCurrency(totalSales)}</span>
+              <span className="bg-white/20 px-4 py-1.5 rounded-full">Target: ₹{formatCurrency(targetAmount)}</span>
+              {extraRevenue > 0 && (
+                <span className="bg-yellow-300/30 px-4 py-1.5 rounded-full text-yellow-100 font-bold">Extra Revenue: +₹{formatCurrency(extraRevenue)}</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 4 Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {/* Card 1: Monthly Target */}
+          <div className="target-card bg-indigo-50 border border-indigo-200">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow">
+                <Target size={18} className="text-white" />
+              </div>
+              <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Monthly Target</span>
+            </div>
+            <p className="text-2xl font-extrabold text-indigo-700 animate-number-pop">₹{formatCurrency(targetAmount)}</p>
+          </div>
+
+          {/* Card 2: Sales Generated */}
+          <div className={`target-card ${colors.light} border ${colors.border}`}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center shadow`}>
+                <TrendingUp size={18} className="text-white" />
+              </div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sales Generated</span>
+            </div>
+            <p className={`text-2xl font-extrabold ${colors.text} animate-number-pop`}>₹{formatCurrency(totalSales)}</p>
+          </div>
+
+          {/* Card 3: Remaining Target */}
+          <div className="target-card bg-slate-50 border border-slate-200">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center shadow">
+                <IndianRupee size={18} className="text-white" />
+              </div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Remaining Target</span>
+            </div>
+            <p className={`text-2xl font-extrabold ${isTargetAchieved ? 'text-emerald-600' : 'text-slate-700'} animate-number-pop`}>
+              {isTargetAchieved ? '✓ Done' : `₹${formatCurrency(remainingAmount)}`}
+            </p>
+          </div>
+
+          {/* Card 4: Achievement */}
+          <div className={`target-card ${isTargetAchieved ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} border`}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${isTargetAchieved ? 'from-emerald-500 to-emerald-700' : 'from-amber-500 to-orange-600'} flex items-center justify-center shadow`}>
+                <Award size={18} className="text-white" />
+              </div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Achievement</span>
+            </div>
+            <p className={`text-2xl font-extrabold ${isTargetAchieved ? 'text-emerald-600' : 'text-amber-600'} animate-number-pop`}>
+              {achievementPercentage.toFixed(1)}%
+            </p>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm font-semibold">
+            <span className="text-slate-500">
+              ₹{formatCurrency(totalSales)} of ₹{formatCurrency(targetAmount)} achieved
+            </span>
+            <span className={`${colors.text} font-bold`}>{achievementPercentage.toFixed(1)}%</span>
+          </div>
+          <div className="progress-track">
+            <div
+              className={`progress-bar-fill bg-gradient-to-r ${colors.gradient} animate-progress-fill`}
+              style={{ width: `${clampedPercentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [step, setStep] = useState(1); 
-  const [config, setConfig] = useState({
-    month: 'December',
-    year: '2025',
-    numBills: 1,
-    startInvNum: 181
+  const [config, setConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sddBw_config');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          month: parsed.month || 'December',
+          year: parsed.year || '2025',
+          numBills: parsed.numBills || 1,
+          startInvNum: parsed.startInvNum || 181,
+          salesTarget: parsed.salesTarget || 0
+        };
+      }
+    } catch (e) { /* ignore */ }
+    return {
+      month: 'December',
+      year: '2025',
+      numBills: 1,
+      startInvNum: 181,
+      salesTarget: 0
+    };
   });
 
   const [invoices, setInvoices] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Persist config (including salesTarget) to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('sddBw_config', JSON.stringify(config));
+    } catch (e) { /* ignore */ }
+  }, [config]);
+
+  // Compute total sales from all invoices (real-time)
+  const totalSales = useMemo(() => {
+    return invoices.reduce((sum, inv) => {
+      return sum + (parseFloat(inv.taxSection?.grandTotal) || 0);
+    }, 0);
+  }, [invoices]);
+
+  // Persist target tracking data
+  useEffect(() => {
+    if (step === 2 && config.salesTarget > 0) {
+      try {
+        const trackingData = {
+          month: config.month,
+          year: config.year,
+          targetAmount: parseFloat(config.salesTarget) || 0,
+          totalSales,
+          achievementPercentage: config.salesTarget > 0 ? (totalSales / parseFloat(config.salesTarget)) * 100 : 0,
+          lastUpdated: new Date().toISOString()
+        };
+        localStorage.setItem('sddBw_targetTracking', JSON.stringify(trackingData));
+      } catch (e) { /* ignore */ }
+    }
+  }, [step, config.salesTarget, config.month, config.year, totalSales]);
 
   const handleStartSetup = () => {
     const newInvoices = Array.from({ length: config.numBills }, (_, i) => ({
@@ -455,6 +624,26 @@ const App = () => {
                         className="landing-input"
                       />
                     </div>
+
+                    {/* Monthly Sales Target */}
+                    <div className="space-y-2 md:col-span-2">
+                      <label htmlFor="landing-sales-target" className="text-sm font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                        <Target size={14} className="text-indigo-500" />
+                        Monthly Sales Target (₹)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-indigo-400 font-bold text-lg">₹</span>
+                        <input
+                          id="landing-sales-target"
+                          type="number"
+                          value={config.salesTarget || ''}
+                          onChange={(e) => setConfig({...config, salesTarget: e.target.value})}
+                          placeholder="650000"
+                          className="landing-input pl-10"
+                        />
+                      </div>
+                      <p className="text-xs text-slate-400 font-medium pl-1">Set your monthly revenue goal to track achievement in real-time</p>
+                    </div>
                   </div>
 
                   {/* Start Button */}
@@ -542,6 +731,14 @@ const App = () => {
                 <h1 className="text-4xl font-bold tracking-tight text-slate-900">SRI DURGA DEVI BORE WELLS</h1>
                 <p className="text-slate-600 font-bold mt-1 uppercase tracking-wider">BOBBILI, VIZIANAGARAM DIST. | GSTIN: 37AMEPV3389H1ZG</p>
             </header>
+
+            {/* Sales Target Tracker - Sticky at top */}
+            {parseFloat(config.salesTarget) > 0 && (
+              <SalesTargetTracker
+                targetAmount={parseFloat(config.salesTarget) || 0}
+                totalSales={totalSales}
+              />
+            )}
 
             <div className="space-y-12">
             
